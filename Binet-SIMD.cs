@@ -1,40 +1,57 @@
-﻿namespace BinetsFormula
+﻿namespace Fibs
 {
     using System;
-    using System.Linq;
-    using System.Linq.Expressions;
     using System.Numerics;
+    using BenchmarkDotNet.Attributes;
 
-    class Program
+    public class Fib
     {
-        static void Main(string[] args)
+        readonly double phi = (1 + Math.Sqrt(5)) / 2;
+        public double ComputeNth(double n) => Math.Floor(Math.Pow(phi, n) / Math.Sqrt(5) + 0.5);
+        public double ComputeNth_exp(double n) => Math.Floor(Math.Exp(n * Math.Log(phi)) / Math.Sqrt(5) + 0.5);
+
+        [Benchmark]
+        [Arguments(10)]
+        public Vector<double> Compute4n(double n) => new Vector<double>(new double[] {
+            ComputeNth(n),
+            ComputeNth(n + 1),
+            ComputeNth(n + 2),
+            ComputeNth(n + 3)
+        });
+
+        [Benchmark]
+        [Arguments(10)]
+        public Vector<double> Compute4n_exp(double n) => new Vector<double>(new double[] {
+            ComputeNth_exp(n),
+            ComputeNth_exp(n + 1),
+            ComputeNth_exp(n + 2),
+            ComputeNth_exp(n + 3)
+        });
+    }
+
+    [SimpleJob]
+    public class Program
+    {
+        public static void Main(string[] args)
         {
-            double phi = (1 + Math.Sqrt(5)) / 2;
-            double computeNth(double n) => Math.Floor(Math.Pow(phi, n) / Math.Sqrt(5) + 0.5);
-            Vector<double> compute4n(double n) => new Vector<double>(new double[] {
-                computeNth(n),
-                computeNth(n + 1),
-                computeNth(n + 2),
-                computeNth(n + 3)
-            });
-                        
-            int i = 0, numFibs = 10, vecSize = Vector<double>.Count;
-            double [] result = new double[numFibs];
-            
-            for (; i < numFibs - vecSize + 1; i += vecSize)
+            //BenchmarkRunner.Run<Fib>();
+            int index = 0, numFibs = 25, vecSize = Vector<double>.Count;
+            double[] numbers = new double[numFibs];
+            var fib = new Fib();
+
+            for (; index < numFibs - vecSize + 1; index += vecSize)
             {
-                var v = compute4n(i);
-                v.CopyTo(result, i);
+                var v = fib.Compute4n_exp(index);
+                v.CopyTo(numbers, index);
             }
-            if (i != numFibs)
+            if (index != numFibs)
             {
-                for (; i < numFibs; i++)
+                for (; index < numFibs; ++index)
                 {
-                    var v = computeNth(i);
-                    result[i] = v;
+                    numbers[index] = fib.ComputeNth_exp(index);
                 }
             }
-            Console.WriteLine(string.Join(", ", result));
+            Console.WriteLine(string.Join(", ", numbers));
         }
     }
 }
