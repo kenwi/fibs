@@ -1,6 +1,7 @@
 ﻿namespace fibs
 {
     using System;
+    using System.Diagnostics;
     using System.Numerics;
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Running;
@@ -75,7 +76,10 @@
             {
                 numbers[index++] = fib.ComputeNf_exp(index);
             }
+            Debug.Assert(numbers[numbers.Length-1] != float.PositiveInfinity);
+            #if DEBUG
             Console.WriteLine(string.Join(", ", numbers));
+            #endif
         }
 
         [Benchmark]
@@ -91,7 +95,10 @@
             {
                 numbers[index++] = fib.ComputeN_exp(index);
             }
+            Debug.Assert(numbers[numbers.Length-1] != double.PositiveInfinity);
+            #if DEBUG
             Console.WriteLine(string.Join(", ", numbers));
+            #endif
         }
     }
 
@@ -102,7 +109,7 @@
         public static void Main(string[] args)
         {
 #if RELEASE
-            BenchmarkRunner.Run<Fib>();
+            BenchmarkRunner.Run<Bench>();
 #endif
 
 #if DEBUG
