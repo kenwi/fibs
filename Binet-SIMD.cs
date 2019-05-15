@@ -54,7 +54,10 @@
     {
         public static void Main(string[] args)
         {
+#if RELEASE
             BenchmarkRunner.Run<Fib>();
+#endif
+
             {
                 int index = 0, numFibs = 10, vecSize = Vector<float>.Count;
                 float[] numbers = new float[numFibs];
