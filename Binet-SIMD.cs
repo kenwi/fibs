@@ -50,6 +50,53 @@
     }
 
     [SimpleJob]
+    public class Bench
+    {
+        int index, numFibs, vecSize;
+        Fib fib = new Fib();
+
+        void init(int vecSize)
+        {
+            this.index = 0;
+            this.numFibs = 1000;
+            this.vecSize = vecSize;
+        }
+
+        [Benchmark]
+        public void RunWithFloats()
+        {
+            init(Vector<float>.Count);
+            float[] numbers = new float[numFibs];
+            for (; index < numFibs - vecSize + 1; index += vecSize)
+            {
+                fib.Compute8n_f(index).CopyTo(numbers, index);
+            }
+            while (index != numFibs)
+            {
+                numbers[index++] = fib.ComputeNf_exp(index);
+            }
+            Console.WriteLine(string.Join(", ", numbers));
+        }
+
+        [Benchmark]
+        public void RunWithDoubles()
+        {
+            init(Vector<double>.Count);
+            double[] numbers = new double[numFibs];
+            for (; index < numFibs - vecSize + 1; index += vecSize)
+            {
+                fib.Compute4n(index).CopyTo(numbers, index);
+            }
+            while (index != numFibs)
+            {
+                numbers[index++] = fib.ComputeN_exp(index);
+            }
+            Console.WriteLine(string.Join(", ", numbers));
+        }
+    }
+
+
+    [SimpleJob]
     public class Program
     {
         public static void Main(string[] args)
@@ -58,42 +105,11 @@
             BenchmarkRunner.Run<Fib>();
 #endif
 
-            {
-                int index = 0, numFibs = 10, vecSize = Vector<float>.Count;
-                float[] numbers = new float[numFibs];
-                var fib = new Fib();
-
-                for (; index < numFibs - vecSize + 1; index += vecSize)
-                {
-                    fib.Compute8n_f(index).CopyTo(numbers, index);
-                }
-                if (index != numFibs)
-                {
-                    for (; index < numFibs; ++index)
-                    {
-                        numbers[index] = fib.ComputeNf_exp(index);
-                    }
-                }
-                Console.WriteLine(string.Join(", ", numbers));
-            }
-            Console.WriteLine();
-            {
-                int index = 0, numFibs = 10, vecSize = Vector<double>.Count;
-                double[] numbers = new double[numFibs];
-                var fib = new Fib();
-                for (; index < numFibs - vecSize + 1; index += vecSize)
-                {
-                    fib.Compute4n(index).CopyTo(numbers, index);
-                }
-                if (index != numFibs)
-                {
-                    for (; index < numFibs; ++index)
-                    {
-                        numbers[index] = fib.ComputeN_exp(index);
-                    }
-                }
-                Console.WriteLine(string.Join(", ", numbers));
-            }
+#if DEBUG
+            var bench = new Bench();
+            bench.RunWithFloats();
+            bench.RunWithDoubles();
+#endif
         }
     }
 }
