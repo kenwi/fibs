@@ -55,6 +55,10 @@
     {
         int index, numFibs, vecSize;
         Fib fib = new Fib();
+        
+        #if DEBUG
+        public string Buffer;
+        #endif
 
         void init(int vecSize)
         {
@@ -64,7 +68,7 @@
         }
 
         [Benchmark]
-        public void RunWithFloats()
+        public float[] RunWithFloats()
         {
             init(Vector<float>.Count);
             float[] numbers = new float[numFibs];
@@ -76,14 +80,15 @@
             {
                 numbers[index++] = fib.ComputeNf_exp(index);
             }
-            Debug.Assert(numbers[numbers.Length-1] != float.PositiveInfinity);
             #if DEBUG
-            Console.WriteLine(string.Join(", ", numbers));
+            Debug.Assert(numbers[numbers.Length-1] != float.PositiveInfinity);
+            Buffer = string.Join(", ", numbers);
             #endif
+            return numbers;
         }
 
         [Benchmark]
-        public void RunWithDoubles()
+        public double[] RunWithDoubles()
         {
             init(Vector<double>.Count);
             double[] numbers = new double[numFibs];
@@ -95,10 +100,11 @@
             {
                 numbers[index++] = fib.ComputeN_exp(index);
             }
-            Debug.Assert(numbers[numbers.Length-1] != double.PositiveInfinity);
             #if DEBUG
-            Console.WriteLine(string.Join(", ", numbers));
+            Debug.Assert(numbers[numbers.Length-1] != double.PositiveInfinity);
+            Buffer = string.Join(", ", numbers);
             #endif
+            return numbers;
         }
     }
 
@@ -115,7 +121,9 @@
 #if DEBUG
             var bench = new Bench();
             bench.RunWithFloats();
+            Console.WriteLine(bench.Buffer);
             bench.RunWithDoubles();
+            Console.WriteLine(bench.Buffer);
 #endif
         }
     }
