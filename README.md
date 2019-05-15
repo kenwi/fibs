@@ -15,5 +15,8 @@ Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 |     ComputeNf | 10 |  10.34 ns | 0.1812 ns | 0.1695 ns |
 | ComputeNf_exp | 10 |  14.28 ns | 0.2755 ns | 0.2577 ns |
 |   Compute8n_f | 10 | 117.49 ns | 2.3617 ns | 2.5270 ns |
+
+|         Method |     Mean |     Error |    StdDev |
+|--------------- |---------:|----------:|----------:|
 |  RunWithFloats | 48.37 us | 0.8567 us | 0.7595 us |
 | RunWithDoubles | 20.75 us | 0.4110 us | 0.4221 us |
