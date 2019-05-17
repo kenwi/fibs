@@ -19,21 +19,20 @@
         
         float[] floats;
         double[] doubles;
-        
-        BenchmarkComputation<float> genericFloatComputation;
-        BenchmarkComputation<double> genericDoubleComputation;
+        BenchmarkComputation<float> floatComputation;
+        BenchmarkComputation<double> doubleComputation;
 
         public Benchmark()
         {
             doubles = new double[numFibs];
-            genericDoubleComputation = new BenchmarkComputation<double>();
-            genericDoubleComputation.ComputeMultiple = (numbers, index) => Compute4n_d(index).CopyTo(numbers, index);
-            genericDoubleComputation.ComputeSingle = (numbers, index) => numbers[index] = ComputeN_dexp(index);
+            doubleComputation = new BenchmarkComputation<double>();
+            doubleComputation.ComputeMultiple = (numbers, index) => Compute4n_d(index).CopyTo(numbers, index);
+            doubleComputation.ComputeSingle = (numbers, index) => numbers[index] = ComputeN_dexp(index);
 
             floats = new float[numFibs];
-            genericFloatComputation = new BenchmarkComputation<float>();
-            genericFloatComputation.ComputeMultiple = (numbers, index) => Compute8n_f(index).CopyTo(numbers, index);
-            genericFloatComputation.ComputeSingle = (numbers, index) => numbers[index] = ComputeN_fexp(index);
+            floatComputation = new BenchmarkComputation<float>();
+            floatComputation.ComputeMultiple = (numbers, index) => Compute8n_f(index).CopyTo(numbers, index);
+            floatComputation.ComputeSingle = (numbers, index) => numbers[index] = ComputeN_fexp(index);
         }
         
         [Benchmark]
@@ -112,11 +111,11 @@
             vecSize = Vector<double>.Count;
             for (; index < numFibs - vecSize + 1; index += vecSize)
             {
-                genericDoubleComputation.ComputeMultiple(doubles, index);
+                doubleComputation.ComputeMultiple(doubles, index);
             }
             while (index != numFibs)
             {
-                genericDoubleComputation.ComputeSingle(doubles, index++);
+                doubleComputation.ComputeSingle(doubles, index++);
             }
             index = 0;
             return doubles;
@@ -128,11 +127,11 @@
             vecSize = Vector<float>.Count;
             for (; index < numFibs - vecSize + 1; index += vecSize)
             {
-                genericFloatComputation.ComputeMultiple(floats, index);
+                floatComputation.ComputeMultiple(floats, index);
             }
             while (index != numFibs)
             {
-                genericFloatComputation.ComputeSingle(floats, index++);
+                floatComputation.ComputeSingle(floats, index++);
             }
             index = 0;
             return floats;
