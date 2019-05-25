@@ -1,5 +1,7 @@
 // * Summary *
 
+Warning: At the moment the functions retrieve the wrong values after 100+ iterations.
+
 BenchmarkDotNet=v0.11.5
 Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=3.0.100-preview3-010431
